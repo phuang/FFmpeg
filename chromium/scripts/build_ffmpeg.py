@@ -708,8 +708,6 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch,
         configure_flags['Common'].extend([
             # --optflags doesn't append multiple entries, so set all at once.
             '--optflags="-O2"',
-            '--enable-decoder=theora,vp8',
-            '--enable-parser=vp3,vp8',
         ])
 
     if target_os in ('linux', 'linux-noasm', 'android'):

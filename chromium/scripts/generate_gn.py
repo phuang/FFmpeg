@@ -713,10 +713,11 @@ RENAME_PREFIX = 'autorename'
 RENAME_REGEX = re.compile('.*' + RENAME_PREFIX + '_.+')
 
 # Content for the rename file. #includes the original file to ensure the two
-# files stay in sync.
-RENAME_CONTENT = """{0} File automatically generated. See crbug.com/495833.
+# files stay in sync. We include the current time to avoid issues when the
+# included file changes, but the rename doesn't. See crbug.com/41492173.
+RENAME_CONTENT = """{0} Automatically generated on %s. See crbug.com/495833.
 {1}include "{2}"
-"""
+""" % (datetime.datetime.now().ctime())
 
 
 def GetIncludedSources(file_path, source_dir, include_set, scan_only=False):
@@ -1033,6 +1034,7 @@ def main():
     with open(gn_file_name, 'w') as fd:
         WriteGn(fd, sets)
 
+    subprocess.run(['gn', 'format', gn_file_name])
 
 if __name__ == '__main__':
     main()
