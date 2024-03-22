@@ -131,6 +131,9 @@ int         nb_output_files   = 0;
 FilterGraph **filtergraphs;
 int        nb_filtergraphs;
 
+Decoder     **decoders;
+int        nb_decoders;
+
 #if HAVE_TERMIOS_H
 
 /* init terminal so that we can grab keys */
@@ -325,22 +328,24 @@ const AVIOInterruptCB int_cb = { decode_interrupt_cb, NULL };
 
 static void ffmpeg_cleanup(int ret)
 {
-    int i;
-
     if (do_benchmark) {
         int maxrss = getmaxrss() / 1024;
         av_log(NULL, AV_LOG_INFO, "bench: maxrss=%iKiB\n", maxrss);
     }
 
-    for (i = 0; i < nb_filtergraphs; i++)
+    for (int i = 0; i < nb_filtergraphs; i++)
         fg_free(&filtergraphs[i]);
     av_freep(&filtergraphs);
 
-    for (i = 0; i < nb_output_files; i++)
+    for (int i = 0; i < nb_output_files; i++)
         of_free(&output_files[i]);
 
-    for (i = 0; i < nb_input_files; i++)
+    for (int i = 0; i < nb_input_files; i++)
         ifile_close(&input_files[i]);
+
+    for (int i = 0; i < nb_decoders; i++)
+        dec_free(&decoders[i]);
+    av_freep(&decoders);
 
     if (vstats_file) {
         if (fclose(vstats_file))
@@ -404,23 +409,63 @@ InputStream *ist_iter(InputStream *prev)
     return NULL;
 }
 
+static void frame_data_free(void *opaque, uint8_t *data)
+{
+    FrameData *fd = (FrameData *)data;
+
+    avcodec_parameters_free(&fd->par_enc);
+
+    av_free(data);
+}
+
 static int frame_data_ensure(AVBufferRef **dst, int writable)
 {
-    if (!*dst) {
+    AVBufferRef *src = *dst;
+
+    if (!src || (writable && !av_buffer_is_writable(src))) {
         FrameData *fd;
 
-        *dst = av_buffer_allocz(sizeof(*fd));
-        if (!*dst)
+        fd = av_mallocz(sizeof(*fd));
+        if (!fd)
             return AVERROR(ENOMEM);
-        fd = (FrameData*)((*dst)->data);
 
-        fd->dec.frame_num = UINT64_MAX;
-        fd->dec.pts       = AV_NOPTS_VALUE;
+        *dst = av_buffer_create((uint8_t *)fd, sizeof(*fd),
+                                frame_data_free, NULL, 0);
+        if (!*dst) {
+            av_buffer_unref(&src);
+            av_freep(&fd);
+            return AVERROR(ENOMEM);
+        }
 
-        for (unsigned i = 0; i < FF_ARRAY_ELEMS(fd->wallclock); i++)
-            fd->wallclock[i] = INT64_MIN;
-    } else if (writable)
-        return av_buffer_make_writable(dst);
+        if (src) {
+            const FrameData *fd_src = (const FrameData *)src->data;
+
+            memcpy(fd, fd_src, sizeof(*fd));
+            fd->par_enc = NULL;
+
+            if (fd_src->par_enc) {
+                int ret = 0;
+
+                fd->par_enc = avcodec_parameters_alloc();
+                ret = fd->par_enc ?
+                      avcodec_parameters_copy(fd->par_enc, fd_src->par_enc) :
+                      AVERROR(ENOMEM);
+                if (ret < 0) {
+                    av_buffer_unref(dst);
+                    av_buffer_unref(&src);
+                    return ret;
+                }
+            }
+
+            av_buffer_unref(&src);
+        } else {
+            fd->dec.frame_num = UINT64_MAX;
+            fd->dec.pts       = AV_NOPTS_VALUE;
+
+            for (unsigned i = 0; i < FF_ARRAY_ELEMS(fd->wallclock); i++)
+                fd->wallclock[i] = INT64_MIN;
+        }
+    }
 
     return 0;
 }
@@ -792,7 +837,7 @@ static int check_keyboard_interaction(int64_t cur_time)
  */
 static int transcode(Scheduler *sch)
 {
-    int ret = 0, i;
+    int ret = 0;
     int64_t timer_start, transcode_ts = 0;
 
     print_stream_maps();
@@ -824,7 +869,7 @@ static int transcode(Scheduler *sch)
     ret = sch_stop(sch, &transcode_ts);
 
     /* write the trailer if needed */
-    for (i = 0; i < nb_output_files; i++) {
+    for (int i = 0; i < nb_output_files; i++) {
         int err = of_write_trailer(output_files[i]);
         ret = err_merge(ret, err);
     }
