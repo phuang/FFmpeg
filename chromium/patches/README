@@ -857,3 +857,24 @@ Date:   Tue Apr 2 18:38:29 2024 -0700
 Affects:
     libavformat/wavdec.c
 
+------------------------------------------------------------------
+commit 3d0dcb0a6cab8cf2841903dfc8e8c88b9da1b9ae
+Author: Dale Curtis <dalecurtis@chromium.org>
+Date:   Mon Apr 1 23:03:18 2024 +0000
+
+    Revert "avutil/tx_template: extend to 2M" and asm changes.
+
+    This causes unnecessary startup memory regressions on Windows
+    since Windows counts BSS as private memory even if it's never
+    used. We only use the MDCT parts of the TX float for AAC.
+
+    This reverts commit 8f48a62151f4a299574959df9a48813303ef4edb.
+    This reverts commit bd3e71b21ec3786ec6fc00ef260af0150f31b71b.
+
+    R=tmathmeyer
+
+    Bug: 40936872
+
+Affects:
+    libavutil/tx_template.c
+    libavutil/x86/tx_float.asm
