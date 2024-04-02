@@ -821,3 +821,16 @@ Date:   Tue Feb 27 15:25:30 2024 -0800
 Affects:
     configure
 
+------------------------------------------------------------------
+commit ea00604a81b906f974d986e120442eb58bc6c3ca
+Author: Ted Meyer <tmathmeyer@chromium.org>
+Date:   Thu Mar 28 19:32:59 2024 -0700
+
+    Add AAC_xHE case to aacdec_template.c for demuxing
+
+    The parser needs to be able to be created when demuxing, otherwise the
+    channel count and layout can't be successfully generated.
+
+Affects:
+    libavcodec/aacdec_template.c
+
