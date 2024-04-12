@@ -39,6 +39,7 @@
 #include "libavutil/avstring.h"
 #include "libavutil/error.h"
 #include "libavutil/intreadwrite.h"
+#include "libavutil/mem.h"
 #include "libavutil/opt.h"
 #include "libavutil/reverse.h"
 #include "avcodec.h"
@@ -175,7 +176,7 @@ static int cmp_id_key(const void *id, const void *k)
 
 static const char *search_keyval(const TiffGeoTagKeyName *keys, int n, int id)
 {
-    TiffGeoTagKeyName *r = bsearch(&id, keys, n, sizeof(keys[0]), cmp_id_key);
+    const TiffGeoTagKeyName *r = bsearch(&id, keys, n, sizeof(keys[0]), cmp_id_key);
     if(r)
         return r->name;
 

@@ -29,12 +29,12 @@
 #include "libavutil/imgutils.h"
 #include "libavutil/intreadwrite.h"
 #include "libavutil/mastering_display_metadata.h"
+#include "libavutil/mem.h"
 #include "libavutil/opt.h"
 #include "libavutil/pixdesc.h"
 #include "libavutil/avassert.h"
 
 #include "codec_internal.h"
-#include "internal.h"
 #include "encode.h"
 #include "packet_internal.h"
 #include "avcodec.h"
@@ -180,12 +180,10 @@ static void handle_side_data(AVCodecContext *avctx,
                              EbSvtAv1EncConfiguration *param)
 {
     const AVFrameSideData *cll_sd =
-        av_frame_side_data_get(
-            (const AVFrameSideData **)avctx->decoded_side_data,
+        av_frame_side_data_get(avctx->decoded_side_data,
             avctx->nb_decoded_side_data, AV_FRAME_DATA_CONTENT_LIGHT_LEVEL);
     const AVFrameSideData *mdcv_sd =
-        av_frame_side_data_get(
-            (const AVFrameSideData **)avctx->decoded_side_data,
+        av_frame_side_data_get(avctx->decoded_side_data,
             avctx->nb_decoded_side_data,
             AV_FRAME_DATA_MASTERING_DISPLAY_METADATA);
 
@@ -488,6 +486,7 @@ static int eb_send_frame(AVCodecContext *avctx, const AVFrame *frame)
 {
     SvtContext           *svt_enc = avctx->priv_data;
     EbBufferHeaderType  *headerPtr = svt_enc->in_buf;
+    EbErrorType svt_ret;
     int ret;
 
     if (!frame) {
@@ -526,7 +525,9 @@ static int eb_send_frame(AVCodecContext *avctx, const AVFrame *frame)
     if (avctx->gop_size == 1)
         headerPtr->pic_type = EB_AV1_KEY_PICTURE;
 
-    svt_av1_enc_send_picture(svt_enc->svt_handle, headerPtr);
+    svt_ret = svt_av1_enc_send_picture(svt_enc->svt_handle, headerPtr);
+    if (svt_ret != EB_ErrorNone)
+        return svt_print_error(avctx, svt_ret, "Error sending a frame to encoder");
 
     return 0;
 }
@@ -581,6 +582,8 @@ static int eb_receive_packet(AVCodecContext *avctx, AVPacket *pkt)
     svt_ret = svt_av1_enc_get_packet(svt_enc->svt_handle, &headerPtr, svt_enc->eos_flag);
     if (svt_ret == EB_NoErrorEmptyQueue)
         return AVERROR(EAGAIN);
+    else if (svt_ret != EB_ErrorNone)
+        return svt_print_error(avctx, svt_ret, "Error getting an output packet from encoder");
 
 #if SVT_AV1_CHECK_VERSION(2, 0, 0)
     if (headerPtr->flags & EB_BUFFERFLAG_EOS) {

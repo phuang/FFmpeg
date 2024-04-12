@@ -28,6 +28,7 @@
 #include "config_components.h"
 
 #include "libavutil/avassert.h"
+#include "libavutil/mem.h"
 #include "libavutil/pixdesc.h"
 #include "libavutil/timecode.h"
 #include "decode.h"
@@ -482,7 +483,7 @@ static int h264_frame_start(H264Context *h)
 
     if (!ff_thread_can_start_frame(h->avctx)) {
         av_log(h->avctx, AV_LOG_ERROR, "Attempt to start a frame outside SETUP state\n");
-        return -1;
+        return AVERROR_BUG;
     }
 
     release_unused_pictures(h, 1);

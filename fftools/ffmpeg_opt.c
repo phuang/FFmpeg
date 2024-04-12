@@ -31,7 +31,6 @@
 #include "ffmpeg_sched.h"
 #include "cmdutils.h"
 #include "opt_common.h"
-#include "sync_queue.h"
 
 #include "libavformat/avformat.h"
 
@@ -43,16 +42,10 @@
 #include "libavutil/avassert.h"
 #include "libavutil/avstring.h"
 #include "libavutil/avutil.h"
-#include "libavutil/bprint.h"
-#include "libavutil/channel_layout.h"
-#include "libavutil/display.h"
-#include "libavutil/intreadwrite.h"
-#include "libavutil/fifo.h"
 #include "libavutil/mathematics.h"
+#include "libavutil/mem.h"
 #include "libavutil/opt.h"
 #include "libavutil/parseutils.h"
-#include "libavutil/pixdesc.h"
-#include "libavutil/pixfmt.h"
 
 HWDevice *filter_hw_device;
 
@@ -1271,12 +1264,10 @@ int ffmpeg_parse_options(int argc, char **argv, Scheduler *sch)
     }
 
     // bind unbound filtegraph inputs/outputs and check consistency
-    for (int i = 0; i < nb_filtergraphs; i++) {
-        ret = fg_finalise_bindings(filtergraphs[i]);
-        if (ret < 0) {
-            errmsg = "binding filtergraph inputs/outputs";
-            goto fail;
-        }
+    ret = fg_finalise_bindings();
+    if (ret < 0) {
+        errmsg = "binding filtergraph inputs/outputs";
+        goto fail;
     }
 
     correct_input_start_times();

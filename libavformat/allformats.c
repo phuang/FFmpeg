@@ -391,6 +391,7 @@ extern const FFInputFormat  ff_qoa_demuxer;
 extern const FFInputFormat  ff_r3d_demuxer;
 extern const FFInputFormat  ff_rawvideo_demuxer;
 extern const FFOutputFormat ff_rawvideo_muxer;
+extern const FFInputFormat  ff_rcwt_demuxer;
 extern const FFOutputFormat ff_rcwt_muxer;
 extern const FFInputFormat  ff_realtext_demuxer;
 extern const FFInputFormat  ff_redspark_demuxer;
@@ -576,8 +577,8 @@ extern const FFInputFormat  ff_vapoursynth_demuxer;
 #include "libavformat/muxer_list.c"
 #include "libavformat/demuxer_list.c"
 
-static atomic_uintptr_t indev_list_intptr  = ATOMIC_VAR_INIT(0);
-static atomic_uintptr_t outdev_list_intptr = ATOMIC_VAR_INIT(0);
+static atomic_uintptr_t indev_list_intptr  = 0;
+static atomic_uintptr_t outdev_list_intptr = 0;
 
 const AVOutputFormat *av_muxer_iterate(void **opaque)
 {
