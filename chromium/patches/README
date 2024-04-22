@@ -866,3 +866,24 @@ Date:   Fri Apr 12 18:06:19 2024 +0000
 Affects:
     configure
 
+------------------------------------------------------------------
+commit dd45b7c227a4d4ba5e48be0434034e84853a0b41
+Author: Frank Liberato <liberato@chromium.org>
+Date:   Mon Apr 22 22:11:09 2024 +0000
+
+    Turn off PIC for x86.
+
+    PIC was turned off for x86 by x86inc.asm.
+
+    Commit afa471d0e removed this, but some PIC code assumes that we
+    have quad registers that don't exist on x86.
+
+    This CL puts the check back, at least until we can sort out what
+    the right behavior in upstream is.  Probably, this will be put
+    back into upstream so this patch can go away.
+
+    Bug: b/334192344
+
+Affects:
+    libavutil/x86/x86inc.asm
+

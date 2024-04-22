@@ -109,6 +109,16 @@
     default rel
 %elifidn __OUTPUT_FORMAT__,win32
     %define PIC 0 ; PIC isn't used on 32-bit Windows
+; vv chromium patch vv
+; Replace functionality that was removed by
+; upstream/afa471d0efed1df5dca6eeeb2fcdd211ae4cad4e
+; See b/334192344#comment8 for details
+%elif ARCH_X86_64 == 0
+; x86_32 doesn't require PIC.
+; Some distros prefer shared objects to be PIC, but nothing breaks if
+; the code contains a few textrels, so we'll skip that complexity.
+    %define PIC 0
+; ^^ end chromium patch ^^
 %elifndef PIC
     %define PIC 0
 %endif
