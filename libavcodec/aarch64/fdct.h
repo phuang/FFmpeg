@@ -1,6 +1,4 @@
 /*
- * AAC decoder data
- *
  * This file is part of FFmpeg.
  *
  * FFmpeg is free software; you can redistribute it and/or
@@ -18,38 +16,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/**
- * @file
- * AAC decoder data
- * @author Oded Shimon  ( ods15 ods15 dyndns org )
- * @author Maxim Gavrilov ( maxim.gavrilov gmail com )
- */
-
-#ifndef AVCODEC_AACDECTAB_H
-#define AVCODEC_AACDECTAB_H
+#ifndef AVCODEC_AARCH64_FDCT_H
+#define AVCODEC_AARCH64_FDCT_H
 
 #include <stdint.h>
 
-#include "vlc.h"
+void ff_fdct_neon(int16_t *block);
 
-#include "libavutil/attributes_internal.h"
-#include "libavutil/channel_layout.h"
-
-FF_VISIBILITY_PUSH_HIDDEN
-void ff_aacdec_common_init_once(void);
-
-extern const VLCElem *ff_aac_sbr_vlc[10];
-
-extern VLCElem ff_vlc_scalefactors[];
-extern const VLCElem *ff_vlc_spectral[11];
-
-extern const int8_t ff_tags_per_config[16];
-
-extern const uint8_t ff_aac_channel_layout_map[16][16][3];
-
-extern const int16_t ff_aac_channel_map[3][4][6];
-
-extern const AVChannelLayout ff_aac_ch_layout[];
-FF_VISIBILITY_POP_HIDDEN
-
-#endif /* AVCODEC_AACDECTAB_H */
+#endif /* AVCODEC_AARCH64_FDCT_H */
