@@ -1434,10 +1434,10 @@ typedef struct AVFormatContext {
 #endif
 #define AVFMT_FLAG_AUTO_BSF   0x200000 ///< Add bitstream filters as requested by the muxer
 
-// Chromium: Flag to experimentally disable parsers for demuxing.
-// TODO(crbug.com/355485812): Remove after M132 if video parsers can be removed
+// Chromium: Flag to experimentally disable H.264 parsing for demuxing.
+// TODO(crbug.com/355485812): Remove after M132 if H.264 parsers can be removed
 // from the build configurations.
-#define AVFMT_FLAG_NOVIDEOPARSE 0x400000
+#define AVFMT_FLAG_NOH264PARSE 0x400000
 
     /**
      * Maximum number of bytes read from input in order to determine stream

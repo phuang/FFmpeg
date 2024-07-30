@@ -1412,8 +1412,8 @@ static int read_frame_internal(AVFormatContext *s, AVPacket *pkt)
                    av_ts2str(pkt->dts),
                    pkt->size, pkt->duration, pkt->flags);
 
-        skip_parse = (s->flags & AVFMT_FLAG_NOVIDEOPARSE) &&
-                     (st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO);
+        skip_parse = (s->flags & AVFMT_FLAG_NOH264PARSE) &&
+                     (st->codecpar->codec_id == AV_CODEC_ID_H264);
 
         if (sti->need_parsing && !sti->parser && !(s->flags & AVFMT_FLAG_NOPARSE) && !skip_parse) {
             sti->parser = av_parser_init(st->codecpar->codec_id);
@@ -2568,8 +2568,8 @@ int avformat_find_stream_info(AVFormatContext *ic, AVDictionary **options)
 
         // TODO(crbug.com/355485812): Remove after M132 if video parsers can be
         // removed from the build configurations.
-        int skip_parse = (ic->flags & AVFMT_FLAG_NOVIDEOPARSE) &&
-                         (st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO);
+        int skip_parse = (ic->flags & AVFMT_FLAG_NOH264PARSE) &&
+                         (st->codecpar->codec_id == AV_CODEC_ID_H264);
 
         /* check if the caller has overridden the codec id */
         // only for the split stuff
