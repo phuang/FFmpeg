@@ -51,6 +51,10 @@ if (has_nasm_deps) {
       "libavutil/x86/x86util.asm",
     ]
 
+    if (ffmpeg_branding == "Chrome") {
+      inputs += [ "libavcodec/x86/videodsp.asm" ]
+    }
+
     defines = [ "PIC" ]
     include_dirs = [
       platform_config_root,
