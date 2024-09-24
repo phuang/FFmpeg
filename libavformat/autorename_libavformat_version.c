@@ -1,2 +1,2 @@
-// Automatically generated on Mon Jul 22 22:30:21 2024. See crbug.com/495833.
+// Automatically generated on Tue Sep 24 17:20:58 2024. See crbug.com/495833.
 #include "version.c"
