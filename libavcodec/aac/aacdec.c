@@ -1037,6 +1037,7 @@ static int decode_audio_specific_config_gb(AACDecContext *ac,
     case AOT_AAC_LTP:
     case AOT_ER_AAC_LC:
     case AOT_ER_AAC_LD:
+    case AOT_USAC:
         if ((ret = decode_ga_specific_config(ac, avctx, gb, get_bit_alignment,
                                              &oc->m4ac, m4ac->chan_config)) < 0)
             return ret;
@@ -1046,6 +1047,7 @@ static int decode_audio_specific_config_gb(AACDecContext *ac,
                                               &oc->m4ac, m4ac->chan_config)) < 0)
             return ret;
         break;
+/*
 #if CONFIG_AAC_DECODER
     case AOT_USAC:
         if ((ret = ff_aac_usac_config_decode(ac, avctx, gb,
@@ -1053,6 +1055,7 @@ static int decode_audio_specific_config_gb(AACDecContext *ac,
             return ret;
         break;
 #endif
+*/
     default:
         avpriv_report_missing_feature(avctx,
                                       "Audio object type %s%d",
