@@ -822,7 +822,7 @@ int ff_h2645_sei_to_frame(AVFrame *frame, H2645SEI *sei,
     }
 
     if (sei->film_grain_characteristics && sei->film_grain_characteristics->present) {
-        H2645SEIFilmGrainCharacteristics *fgc = &sei->film_grain_characteristics;
+        H2645SEIFilmGrainCharacteristics *fgc = sei->film_grain_characteristics;
         AVFilmGrainParams *fgp = av_film_grain_params_create_side_data(frame);
         AVFilmGrainH274Params *h274;
 
