@@ -1,5 +1,7 @@
 Name: ffmpeg
 URL: http://ffmpeg.org/
+Version: N/A
+Revision: DEPS
 License: LGPL 2.1
 License File: CREDITS.chromium
 Shipped: yes
