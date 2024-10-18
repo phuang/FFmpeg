@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 2024 Christian R. Helmrich
- * Copyright (c) 2024 Christian Lehmann
- * Copyright (c) 2024 Christian Stoffers
+ * Copyright (c) 2023 Martin Storsjo
  *
  * This file is part of FFmpeg.
  *
@@ -20,24 +18,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/**
- * @file
- * SIMD initialization for calculation of extended perceptually weighted PSNR (XPSNR).
- *
- * Authors: Christian Helmrich, Lehmann, and Stoffers, Fraunhofer HHI, Berlin, Germany
- */
+#include "config.h"
+#include "asm.S"
 
-#include "libavutil/x86/cpu.h"
-#include "libavfilter/xpsnr.h"
+ENABLE_SVE
 
-uint64_t ff_sse_line_16bit_sse2(const uint8_t *buf, const uint8_t *ref, const int w);
-
-void ff_xpsnr_init_x86(PSNRDSPContext *dsp, const int bpp)
-{
-    if (bpp <= 15) { /* XPSNR always operates with 16-bit internal precision */
-        const int cpu_flags = av_get_cpu_flags();
-
-        if (EXTERNAL_SSE2(cpu_flags))
-            dsp->sse_line = ff_sse_line_16bit_sse2;
-    }
-}
+function ff_aarch64_sve_length, export=1
+        cntb            x0
+        ret
+endfunc
