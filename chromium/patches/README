@@ -985,3 +985,55 @@ Affects:
     libavcodec/opus/parse.c
     libavcodec/opus/parser.c
 
+------------------------------------------------------------------
+commit 30735bb16a66e84d6324b5858eef314822b6d419
+Author: Dan Sanders <sandersd@chromium.org>
+Date:   Wed Sep 25 17:57:29 2024 +0000
+
+    Disable xHE AAC specific config parser
+
+    This parser does not recognize our test streams. Revert to the generic
+    AAC parser, which does.
+
+    Bug: 369237342, 353279142
+    Change-Id: I39e7093a54e7c0dc66cfb74401ce3548457a69d5
+    Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/5891970
+    Reviewed-by: Dale Curtis <dalecurtis@chromium.org>
+
+Affects:
+    libavcodec/aac/aacdec.c
+
+------------------------------------------------------------------
+commit 686d6944501a6ee9c849581e3fe343273d4af3f6
+Author: Dan Sanders <sandersd@chromium.org>
+Date:   Tue Oct 1 12:09:08 2024 -0700
+
+    Fix lookup of film_grain_characteristics
+
+    This should not be taking an address now that the field is a pointer.
+
+    Bug: 369956909
+    Change-Id: I502a859885741635436910ba6219147b25761606
+    Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/5901863
+    Reviewed-by: Dale Curtis <dalecurtis@chromium.org>
+
+Affects:
+    libavcodec/h2645_sei.c
+
+------------------------------------------------------------------
+commit 99f17d50d3b4d28740ebc6fb092050363113fce9
+Author: Eugene Zemtsov <eugene@chromium.org>
+Date:   Mon Oct 21 16:22:36 2024 -0700
+
+    Fix incorrect enum type used for a local variable
+
+    It's AVPacketSideDataType, not AVFrameSideDataType.
+
+    Bug: https://issues.chromium.org/issues/374797732
+    Change-Id: If75702c6d639ca63827cc3370477de00544d3c0f
+    Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/5950926
+    Reviewed-by: Ted (Chromium) Meyer <tmathmeyer@chromium.org>
+
+Affects:
+    libavcodec/decode.c
+
