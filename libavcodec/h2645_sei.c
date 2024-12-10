@@ -935,5 +935,7 @@ void ff_h2645_sei_reset(H2645SEI *s)
     s->content_light.present = 0;
 
     ff_refstruct_unref(&s->film_grain_characteristics);
+#if CONFIG_HEVC_SEI
     ff_aom_uninit_film_grain_params(&s->aom_film_grain);
+#endif
 }
