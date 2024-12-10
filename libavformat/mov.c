@@ -10616,19 +10616,22 @@ static int mov_read_header(AVFormatContext *s)
 
                 for (j = 0; j < FF_DVDCLUT_CLUT_LEN; j++)
                     dvdsub_clut[j] = AV_RB32(st->codecpar->extradata + j * 4);
-
+#if CONFIG_DVDVIDEO_DEMUXER
                 err = ff_dvdclut_yuv_to_rgb(dvdsub_clut, FF_DVDCLUT_CLUT_SIZE);
                 if (err < 0)
                     return err;
+#endif
 
                 err = ff_alloc_extradata(st->codecpar, FF_DVDCLUT_EXTRADATA_SIZE);
                 if (err < 0)
                     return err;
 
+#if CONFIG_DVDVIDEO_DEMUXER
                 err = ff_dvdclut_palette_extradata_cat(dvdsub_clut, FF_DVDCLUT_CLUT_SIZE,
                                                        st->codecpar);
                 if (err < 0)
                     return err;
+#endif
             }
         }
         if (mov->handbrake_version &&
