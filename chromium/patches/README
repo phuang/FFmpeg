@@ -1011,3 +1011,15 @@ Date:   Mon Dec 9 16:24:28 2024 -0800
 Affects:
     libavformat/mov.c
 
+------------------------------------------------------------------
+commit 89a09990a932e5442c603b902916cf013436246a
+Author: Ted Meyer <tmathmeyer@chromium.org>
+Date:   Thu Dec 12 17:19:33 2024 -0800
+
+    add __attribute__((used)) to ff_h264_cabac_tables
+
+    Bug: 383824580
+
+
+Affects:
+    libavcodec/cabac.c
