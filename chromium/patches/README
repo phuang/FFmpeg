@@ -1037,3 +1037,15 @@ Date:   Mon Oct 21 16:22:36 2024 -0700
 Affects:
     libavcodec/decode.c
 
+------------------------------------------------------------------
+commit 89a09990a932e5442c603b902916cf013436246a
+Author: Ted Meyer <tmathmeyer@chromium.org>
+Date:   Thu Dec 12 17:19:33 2024 -0800
+
+    add __attribute__((used)) to ff_h264_cabac_tables
+
+    Bug: 383824580
+
+
+Affects:
+    libavcodec/cabac.c
