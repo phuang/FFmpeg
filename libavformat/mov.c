@@ -5955,12 +5955,16 @@ static int mov_read_trun(MOVContext *c, AVIOContext *pb, MOVAtom atom)
                 sti->index_entries + index_entry_pos,
                 sizeof(*sti->index_entries) *
                 (sti->nb_index_entries - index_entry_pos));
-        memmove(sc->ctts_data + index_entry_pos + entries,
-                sc->ctts_data + index_entry_pos,
-                sizeof(*sc->ctts_data) * (sc->ctts_count - index_entry_pos));
-        memmove(sc->stts_data + index_entry_pos + entries,
-                sc->stts_data + index_entry_pos,
-                sizeof(*sc->stts_data) * (sc->stts_count - index_entry_pos));
+        if (sc->ctts_count >= index_entry_pos) {
+            memmove(sc->ctts_data + index_entry_pos + entries,
+                    sc->ctts_data + index_entry_pos,
+                    sizeof(*sc->ctts_data) * (sc->ctts_count - index_entry_pos));
+        }
+        if (sc->stts_count >= index_entry_pos) {
+            memmove(sc->stts_data + index_entry_pos + entries,
+                    sc->stts_data + index_entry_pos,
+                    sizeof(*sc->stts_data) * (sc->stts_count - index_entry_pos));
+        }
         if (index_entry_pos < sc->current_sample) {
             sc->current_sample += entries;
         }
