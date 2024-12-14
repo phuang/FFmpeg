@@ -1023,3 +1023,19 @@ Date:   Thu Dec 12 17:19:33 2024 -0800
 
 Affects:
     libavcodec/cabac.c
+
+------------------------------------------------------------------
+commit 818bf360d55593a8676346864195b377699b2f13
+Author: Ted Meyer <tmathmeyer@chromium.org>
+Date:   Fri Dec 13 16:55:41 2024 -0800
+
+    Guard memmove length calculations
+
+    stts_count and ctts_count aren't guaranteed to be larger than
+    index_entry_pos, which could cause overflow of the unsigned size
+    argument for memmove, leading to massive out of bounds memory writes.
+
+    Bug: 383454674
+
+Affects:
+    libavformat/mov.c
