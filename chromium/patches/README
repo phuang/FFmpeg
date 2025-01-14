@@ -970,21 +970,6 @@ Affects:
     libavcodec/aac/aacdec.c
 
 ------------------------------------------------------------------
-commit 3ea8d0a2ce7dde53c1574d8f032b803e584a6355
-Author: Eugene Zemtsov <eugene@chromium.org>
-Date:   Wed Oct 23 18:29:41 2024 -0700
-
-    Fix crash when trying to get a fragment time for a non-existing fragment
-
-    Bug: https://issues.chromium.org/issues/372994341
-    Change-Id: I695d625717c078ed6f84f44e58c34da858af4d3b
-    Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/5958151
-    Reviewed-by: Dale Curtis <dalecurtis@chromium.org>
-
-Affects:
-    libavformat/mov.c
-
-------------------------------------------------------------------
 commit 590dd6169ac0b8ee102086cfb40c51dee5a47072
 Author: Ted Meyer <tmathmeyer@chromium.org>
 Date:   Mon Dec 9 16:16:13 2024 -0800
@@ -1020,7 +1005,6 @@ Date:   Thu Dec 12 17:19:33 2024 -0800
 
     Bug: 383824580
 
-
 Affects:
     libavcodec/cabac.c
 
@@ -1039,3 +1023,33 @@ Date:   Fri Dec 13 16:55:41 2024 -0800
 
 Affects:
     libavformat/mov.c
+
+------------------------------------------------------------------
+commit cae04bf9414c582fcc28edc6078ebfd3800e7838
+Merge: d10a0f8bf5 d5873be583
+Author: Frank Liberato <liberato@chromium.org>
+Date:   Mon Jan 13 20:41:30 2025 +0000
+
+    Merge remote-tracking branch 'upstream/master' into sushi-2025-01-13-20-34-05
+
+     Conflicts:
+            libavcodec/h2645_sei.c
+            libavcodec/hevc/hevcdec.c
+            libavformat/mov.c
+
+Affects:
+    libavformat/mov.c
+
+------------------------------------------------------------------
+commit 53024400970fcb04dc1092b6c028935c7be22063
+Author: Frank Liberato <liberato@chromium.org>
+Date:   Tue Jan 14 00:25:29 2025 +0000
+
+    Remove aom_film_grain
+
+    This was added as a dep in the latest roll, which brings in files that
+    we don't need.
+
+Affects:
+    libavcodec/Makefile
+
