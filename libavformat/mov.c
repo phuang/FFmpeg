@@ -5213,7 +5213,11 @@ static int mov_read_trak(MOVContext *c, AVIOContext *pb, MOVAtom atom)
                 continue;
             stts_constant = 0;
         }
-        if (stts_constant)
+        /**
+         * Chromium: sc->tts_count can be 0 if there are no samples, even if we
+         * have stts.  In this case, ignore it.
+         */
+        if (stts_constant && sc->tts_count > 0)
             av_reduce(&st->r_frame_rate.num, &st->r_frame_rate.den,
                       sc->time_scale, sc->tts_data[0].duration, INT_MAX);
 #endif
