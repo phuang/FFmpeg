@@ -5108,6 +5108,12 @@ static int sanity_checks(void *log_obj, MOVStreamContext *sc, int index)
         return 1;
     }
 
+    if (sc->tts_count) {
+        av_log(log_obj, AV_LOG_ERROR, "stream %d, TRUN atom in TRAK, broken header\n",
+               index);
+        return 1;
+    }
+
     if (sc->stsc_count && sc->stsc_data[ sc->stsc_count - 1 ].first > sc->chunk_count) {
         av_log(log_obj, AV_LOG_ERROR, "stream %d, contradictionary STSC and STCO\n",
                index);
